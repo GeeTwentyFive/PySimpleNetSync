@@ -17,7 +17,7 @@ class SimpleNetSync:
 
                 self._sock.sendto(bytes(1), (self._server_ip, self._server_port))
                 data, _ = self._sock.recvfrom(65536)
-                self.local_id = int.from_bytes(data)
+                self.local_id = int.from_bytes(data, "little")
 
                 threading.Thread(target=self._receive_handler).start()
         
@@ -25,7 +25,7 @@ class SimpleNetSync:
                 self._local_packet_seq_num += 1
                 self._sock.sendto(
                         (
-                                self._local_packet_seq_num.to_bytes(8) +
+                                self._local_packet_seq_num.to_bytes(8, "little") +
                                 data.encode("ascii")
                         ),
                         (self._server_ip, self._server_port)
@@ -36,6 +36,6 @@ class SimpleNetSync:
                 server_packet_seq_num = -1
                 while True:
                         data, _ = self._sock.recvfrom(65536)
-                        if int.from_bytes(data[:8]) <= server_packet_seq_num: continue
-                        server_packet_seq_num = int.from_bytes(data[:8])
+                        if int.from_bytes(data[:8], "little") <= server_packet_seq_num: continue
+                        server_packet_seq_num = int.from_bytes(data[:8], "little")
                         self.states = json.loads(data[8:].decode("ascii"))
