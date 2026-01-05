@@ -16,7 +16,7 @@ from time import sleep
 local_client_state = 0
 
 
-sns = SimpleNetSync("::1", 55555)
+sns = SimpleNetSync("::1", 55555, lambda: print("DISCONNECTED"))
 print(f"Local ID: {sns.local_id}")
 while True:
         print(sns.states)
@@ -28,7 +28,7 @@ while True:
 
 # API
 
-- Constructor: `sns = SimpleNetSync(server_ip, server_port)`
+- Constructor: `sns = SimpleNetSync(server_ip, server_port, disconnect_callback)` (last one is optional)
 - State of all clients (as `{int: str}` dictionary, where `int` is client ID, and `str` is state): `sns.state`
 - Local client ID: `sns.local_id`
 - Update local client's state on server: `sns.send(LOCAL_STATE)`
