@@ -63,7 +63,7 @@ class SimpleNetSync:
                         except BlockingIOError: # Nothing received:
                                 if (time.monotonic() - last_server_packet_receive_time) > TIMEOUT:
                                         self._disconnected = True
-                                        self._on_disconnect()
+                                        if (self._on_disconnect): self._on_disconnect()
                                         return
                                 time.sleep(0.001)
                                 continue
