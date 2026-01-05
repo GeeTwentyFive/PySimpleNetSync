@@ -45,6 +45,9 @@ class SimpleNetSync:
         def send(self, data: str):
                 if (self._disconnected): return
 
+                if len(data) > 65535-8:
+                        raise Exception(f"data size ({len(data)}) exceeds max UDP packet size ({str(65535-8)})")
+
                 self._local_packet_seq_num += 1
                 self._sock.sendto(
                         (
