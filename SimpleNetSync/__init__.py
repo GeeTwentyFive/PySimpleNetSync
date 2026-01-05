@@ -57,18 +57,18 @@ class SimpleNetSync:
 
         def _receive_handler(self):
                 server_packet_seq_num = -1
-                last_server_packet_receive_time = time.monotonic()
+                last_server_state_packet_receive_time = time.monotonic()
                 while True:
                         try: data, _ = self._sock.recvfrom(65536)
                         except BlockingIOError: # Nothing received:
-                                if (time.monotonic() - last_server_packet_receive_time) > TIMEOUT:
+                                if (time.monotonic() - last_server_state_packet_receive_time) > TIMEOUT:
                                         self._disconnected = True
                                         if (self._on_disconnect): self._on_disconnect()
                                         return
                                 time.sleep(0.001)
                                 continue
 
-                        last_server_packet_receive_time = time.monotonic()
+                        last_server_state_packet_receive_time = time.monotonic()
 
                         if int.from_bytes(data[:8], "little", signed=True) <= server_packet_seq_num: continue
                         server_packet_seq_num = int.from_bytes(data[:8], "little", signed=True)
